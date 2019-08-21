@@ -9,3 +9,11 @@
 # Maven
 log/
 target/
+
+# Gradle
+/build/
+/out/
+/.gradle/
+gradle-app.setting
+!gradle-wrapper.jar
+.gradletasknamecache

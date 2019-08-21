@@ -1,6 +1,5 @@
-package io.confluent.cpdemo;
+package io.confluent.demos.common.wiki;
 
-import io.confluent.cpdemo.avro.WikiFeedMetric;
 import io.confluent.kafka.schemaregistry.client.SchemaRegistryClient;
 import io.confluent.kafka.schemaregistry.testutil.MockSchemaRegistry;
 import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig;
@@ -17,9 +16,10 @@ import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.TopologyTestDriver;
 import org.junit.Test;
-import java.util.*;
-import java.util.stream.Collectors;
 
+import java.io.FileInputStream;
+import java.util.stream.Collectors;
+import java.util.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
@@ -45,8 +45,7 @@ public class WikipediaActivityMonitorTest {
                 "#en.wikipedia", "jdoe", "fun new content", 500,
                 "http://diff", false, true, false, false)
                 .orElseThrow(() -> new RuntimeException("schema could not be loaded"));
-        final Optional<Schema> schema = loadSchema();
-        schema.ifPresent(s -> registerSchema(schemaRegistryClient, s, WikipediaActivityMonitor.INPUT_TOPIC));
+        registerSchema(schemaRegistryClient, WikiEdit.SCHEMA$, WikipediaActivityMonitor.INPUT_TOPIC);
     }
 
     private static void registerSchema(final SchemaRegistryClient schemaRegistryClient,
@@ -111,15 +110,6 @@ public class WikipediaActivityMonitorTest {
                 (boolean)from.get(WikipediaActivityMonitor.ISBOT),
                 (boolean)from.get(WikipediaActivityMonitor.ISUNPATROLLED));
     }
-    private static Optional<Schema> loadSchema() {
-        try {
-            return Optional.of(new Schema.Parser()
-                .parse(WikipediaActivityMonitorTest.class
-                        .getResourceAsStream("/avro/io/confluent/cpdemo/WikiEdit.avsc")));
-        } catch (final Exception e) {
-            return Optional.empty();
-        }
-    }
     private static Optional<GenericRecord> buildTestRecord(
             final Long createdAt,
             final String wikipage,
@@ -133,27 +123,19 @@ public class WikipediaActivityMonitorTest {
             final boolean isBot,
             final boolean isUnpatrolled
     ) {
-        Schema schema = null;
-        try {
-            schema = new Schema.Parser().parse(WikipediaActivityMonitorTest.class.getResourceAsStream("/avro/io/confluent/cpdemo/WikiEdit.avsc"));
-        } catch (final Exception ignored) {}
-        if (schema == null)
-            return Optional.empty();
-        else {
-            final GenericRecord record = new GenericData.Record(schema);
-            record.put(WikipediaActivityMonitor.CREATEDAT, createdAt);
-            record.put(WikipediaActivityMonitor.WIKIPAGE, wikipage);
-            record.put(WikipediaActivityMonitor.CHANNEL, channel);
-            record.put(WikipediaActivityMonitor.USERNAME, username);
-            record.put(WikipediaActivityMonitor.COMMITMESSAGE, commitMessage);
-            record.put(WikipediaActivityMonitor.BYTECHANGE, byteChange);
-            record.put(WikipediaActivityMonitor.DIFFURL, diffUrl);
-            record.put(WikipediaActivityMonitor.ISNEW, isNew);
-            record.put(WikipediaActivityMonitor.ISMINOR, isMinor);
-            record.put(WikipediaActivityMonitor.ISBOT, isBot);
-            record.put(WikipediaActivityMonitor.ISUNPATROLLED, isUnpatrolled);
-            return Optional.of(record);
-        }
+      final GenericRecord record = new GenericData.Record(WikiEdit.SCHEMA$);
+      record.put(WikipediaActivityMonitor.CREATEDAT, createdAt);
+      record.put(WikipediaActivityMonitor.WIKIPAGE, wikipage);
+      record.put(WikipediaActivityMonitor.CHANNEL, channel);
+      record.put(WikipediaActivityMonitor.USERNAME, username);
+      record.put(WikipediaActivityMonitor.COMMITMESSAGE, commitMessage);
+      record.put(WikipediaActivityMonitor.BYTECHANGE, byteChange);
+      record.put(WikipediaActivityMonitor.DIFFURL, diffUrl);
+      record.put(WikipediaActivityMonitor.ISNEW, isNew);
+      record.put(WikipediaActivityMonitor.ISMINOR, isMinor);
+      record.put(WikipediaActivityMonitor.ISBOT, isBot);
+      record.put(WikipediaActivityMonitor.ISUNPATROLLED, isUnpatrolled);
+      return Optional.of(record);
     }
 
     @Test

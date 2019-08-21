@@ -1,7 +1,7 @@
 {
   "type": "record",
   "name": "WikiFeedMetric",
-  "namespace": "io.confluent.cpdemo.avro",
+  "namespace": "io.confluent.demos.common.wiki",
   "fields": [
     {
       "name": "channel",

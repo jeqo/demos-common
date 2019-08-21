@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package io.confluent.cpdemo;
+package io.confluent.demos.common.wiki;
 
 import io.confluent.common.utils.TestUtils;
-import io.confluent.cpdemo.avro.WikiFeedMetric;
 import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig;
 import io.confluent.kafka.streams.serdes.avro.GenericAvroSerde;
 import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde;

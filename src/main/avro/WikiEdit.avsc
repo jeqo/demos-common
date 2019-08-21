@@ -1,7 +1,7 @@
 {
   "type": "record",
   "name": "WikiEdit",
-  "namespace": "io.confluent.cpdemo.avro",
+  "namespace": "io.confluent.demos.common.wiki",
   "fields": [
     {
       "name": "createdat",
