@@ -38,9 +38,9 @@ import java.util.Map;
 import java.util.Properties;
 
 /**
- * A class that builds a KStreams Topology which will process Wikipedia edits from the
+ * A class that builds a Kafka Streams Topology which will process Wikipedia edits from the
  * `wikipedia.parsed` topic and output edit counts grouped by channel
- * to the `wikipedia.parsed.counts-by-channel` topic. The KStreams application can be
+ * to the `wikipedia.parsed.counts-by-channel` topic. The Kafka Streams application can be
  * ran from the `main` provided here which requires a single command line argument,
  * the location to the properties file containing configuration key / value pairs.  The
  * Topology expects Avro inputs of type WikiFeed and produces output of type WikiFeedMetric
