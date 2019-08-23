@@ -14,7 +14,9 @@ make help
 ```
 
 # Publishing Docker Image
-To release a new version and publish a new docker image run (docker daemon must be logged into proper Docker Hub account):
+To release a new version and publish a new docker image
+* Update the version number in `build.gradle`
+* Run (docker daemon must be logged into proper Docker Hub account):
 ```
 make publish
 ```
