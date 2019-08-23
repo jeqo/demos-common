@@ -5,6 +5,7 @@ Project containing various JVM projects used by Confluent, Inc demos and example
 * bash
 * make
 * grep
+* cut
 
 # usage
 The repository has a `Makefile` which follows a standard target naming convention for cleaning, building, testing and packaging.
