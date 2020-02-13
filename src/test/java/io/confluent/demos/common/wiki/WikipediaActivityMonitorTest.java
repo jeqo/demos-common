@@ -205,7 +205,7 @@ public class WikipediaActivityMonitorTest {
         );
 
         final List<WikiFeedMetric> counts = drainStreamOutput(
-                WikipediaActivityMonitor.OUPTUT_TOPIC,
+                WikipediaActivityMonitor.OUTPUT_TOPIC,
                 testDriver,
                 new StringDeserializer(),
                 metricSerde.deserializer())

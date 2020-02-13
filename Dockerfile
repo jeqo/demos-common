@@ -9,9 +9,9 @@ RUN mvn -B clean dependency:resolve dependency:resolve-plugins dependency:go-off
 COPY src/ ./src/
 RUN mvn -B clean package
  
-FROM confluentinc/cp-kafka:5.3.0
+FROM confluentinc/cp-kafka:5.4.0
 WORKDIR /app
 COPY start.sh /app/start.sh
 CMD /app/start.sh 
-COPY --from=build /build/target/cp-demo-kstreams-5.3.0-standalone.jar /app/cp-demo-kstreams.jar
+COPY --from=build /build/target/cp-demo-kstreams-5.4.0-standalone.jar /app/cp-demo-kstreams.jar
 

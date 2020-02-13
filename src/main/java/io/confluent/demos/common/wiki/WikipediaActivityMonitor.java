@@ -61,7 +61,7 @@ class WikipediaActivityMonitor {
   public static final String ISUNPATROLLED = "isunpatrolled";
 
   public static final String INPUT_TOPIC  = "wikipedia.parsed";
-  public static final String OUPTUT_TOPIC = "wikipedia.parsed.count-by-channel";
+  public static final String OUTPUT_TOPIC = "wikipedia.parsed.count-by-channel";
 
   private static Properties loadEnvProperties(final String fileName) throws IOException {
     final Properties envProps = new Properties();
@@ -121,7 +121,7 @@ class WikipediaActivityMonitor {
        .mapValues(WikiFeedMetric::new)
        .toStream()
        .peek((key, value) -> logger.debug("{}:{}", key, value.getEditCount()))
-       .to(OUPTUT_TOPIC, Produced.with(Serdes.String(), metricSerde));
+       .to(OUTPUT_TOPIC, Produced.with(Serdes.String(), metricSerde));
   }
 
   public static void main(final String[] args) throws IOException {
