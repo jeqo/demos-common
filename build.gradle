@@ -1,4 +1,3 @@
-
 buildscript {
     repositories {
         jcenter()
@@ -15,9 +14,14 @@ plugins {
 }
 
 group = 'io.confluent'
-version = '0.0.4'
+version = '0.0.6'
 sourceCompatibility = "1.8"
 targetCompatibility = "1.8"
+
+ext {
+  kafkaVersion = '2.4.1'
+  cpVersion = '5.4.1'
+}
 
 repositories {
     mavenCentral()
@@ -33,11 +37,12 @@ apply plugin: "com.github.johnrengelman.shadow"
 dependencies {
     compile "org.apache.avro:avro:1.9.1"
     implementation "org.slf4j:slf4j-simple:1.7.26"
-    implementation "org.apache.kafka:kafka-streams:2.4.0"
-    implementation "io.confluent:kafka-streams-avro-serde:5.4.0"
-    implementation "io.confluent:monitoring-interceptors:5.4.0"
-    testCompile "io.confluent:kafka-avro-serializer:5.4.0"
-    testCompile "org.apache.kafka:kafka-streams-test-utils:2.4.0"
+    implementation "org.apache.kafka:kafka-streams:${kafkaVersion}"
+    implementation "io.confluent:kafka-streams-avro-serde:${cpVersion}"
+    implementation "io.confluent:monitoring-interceptors:${cpVersion}"
+
+    testCompile "io.confluent:kafka-avro-serializer:${cpVersion}"
+    testCompile "org.apache.kafka:kafka-streams-test-utils:${kafkaVersion}"
     testCompile "junit:junit:4.12"
     testCompile "org.assertj:assertj-core:3.3.0"
 }
@@ -61,13 +66,13 @@ jar {
 }
 
 jib {
-  to.image = 'cnfldemos/cp-demo-kstreams:0.0.5'
-  from.image = 'confluentinc/cp-kafka:5.4.0'
+  from.image = "confluentinc/cp-kafka:${cpVersion}"
+  to.image = "cnfldemos/cp-demo-kstreams:${version}"
   container {
     entrypoint = '/app/start.sh'
     useCurrentTimestamp=true
   }
-  extraDirectory { 
+  extraDirectories {
     permissions = [
       '/app/start.sh': '755'
     ]
