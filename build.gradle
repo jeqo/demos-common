@@ -41,6 +41,9 @@ dependencies {
     implementation "io.confluent:kafka-streams-avro-serde:${cpVersion}"
     implementation "io.confluent:monitoring-interceptors:${cpVersion}"
 
+    implementation(platform("io.zipkin.brave:brave-bom:5.11.2"))
+    implementation("io.zipkin.brave:brave-instrumentation-kafka-streams")
+    implementation("io.zipkin.reporter2:zipkin-sender-okhttp3")
     testCompile "io.confluent:kafka-avro-serializer:${cpVersion}"
     testCompile "org.apache.kafka:kafka-streams-test-utils:${kafkaVersion}"
     testCompile "junit:junit:4.12"
