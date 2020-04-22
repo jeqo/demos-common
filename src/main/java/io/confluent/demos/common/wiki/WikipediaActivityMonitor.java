@@ -16,6 +16,9 @@
 
 package io.confluent.demos.common.wiki;
 
+import brave.Tracing;
+import brave.kafka.streams.KafkaStreamsTracing;
+import brave.messaging.MessagingTracing;
 import io.confluent.common.utils.TestUtils;
 import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig;
 import io.confluent.kafka.streams.serdes.avro.GenericAvroSerde;
@@ -29,6 +32,10 @@ import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.kstream.Produced;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import zipkin2.Span;
+import zipkin2.reporter.AsyncReporter;
+import zipkin2.reporter.Reporter;
+import zipkin2.reporter.okhttp3.OkHttpSender;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -92,6 +99,7 @@ class WikipediaActivityMonitor {
             "earliest");
     rv.putIfAbsent(StreamsConfig.STATE_DIR_CONFIG,
             TestUtils.tempDirectory().getAbsolutePath());
+    rv.putIfAbsent("zipkin.sender.http.endpoint", "http://zipkin:9411/api/v2/spans");
 
     return rv;
   }
@@ -141,7 +149,16 @@ class WikipediaActivityMonitor {
 
     createMonitorStream(builder, metricSerde);
 
-    final KafkaStreams streams = new KafkaStreams(builder.build(), props);
+    final Reporter<Span> reporter = AsyncReporter.create(OkHttpSender.create(props.getProperty("zipkin.sender.http.endpoint")));
+
+    final Tracing tracing = Tracing.newBuilder()
+            .localServiceName("wikipedia-activity-monitor")
+            .spanReporter(reporter)
+            .build();
+    final MessagingTracing messagingTracing = MessagingTracing.create(tracing);
+    final KafkaStreamsTracing kafkaStreamsTracing = KafkaStreamsTracing.create(messagingTracing);
+
+    final KafkaStreams streams = kafkaStreamsTracing.kafkaStreams(builder.build(), props);
     streams.start();
 
     // Add shutdown hook to respond to SIGTERM and gracefully close Kafka Streams
